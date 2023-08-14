@@ -6,7 +6,8 @@ namespace Game
     {
         static void Main(String[] args)
         {
-            Console.WriteLine("Hello World");
+            GameBoard test = new GameBoard();
+            test.startGame();
         }
     }
 }

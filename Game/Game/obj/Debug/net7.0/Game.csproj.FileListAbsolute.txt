@@ -1,0 +1,15 @@
+/Users/sean/Documents/GitHub/IFN562_Assignment2/Game/Game/bin/Debug/net7.0/Game
+/Users/sean/Documents/GitHub/IFN562_Assignment2/Game/Game/bin/Debug/net7.0/Game.deps.json
+/Users/sean/Documents/GitHub/IFN562_Assignment2/Game/Game/bin/Debug/net7.0/Game.runtimeconfig.json
+/Users/sean/Documents/GitHub/IFN562_Assignment2/Game/Game/bin/Debug/net7.0/Game.dll
+/Users/sean/Documents/GitHub/IFN562_Assignment2/Game/Game/bin/Debug/net7.0/Game.pdb
+/Users/sean/Documents/GitHub/IFN562_Assignment2/Game/Game/obj/Debug/net7.0/Game.csproj.AssemblyReference.cache
+/Users/sean/Documents/GitHub/IFN562_Assignment2/Game/Game/obj/Debug/net7.0/Game.GeneratedMSBuildEditorConfig.editorconfig
+/Users/sean/Documents/GitHub/IFN562_Assignment2/Game/Game/obj/Debug/net7.0/Game.AssemblyInfoInputs.cache
+/Users/sean/Documents/GitHub/IFN562_Assignment2/Game/Game/obj/Debug/net7.0/Game.AssemblyInfo.cs
+/Users/sean/Documents/GitHub/IFN562_Assignment2/Game/Game/obj/Debug/net7.0/Game.csproj.CoreCompileInputs.cache
+/Users/sean/Documents/GitHub/IFN562_Assignment2/Game/Game/obj/Debug/net7.0/Game.dll
+/Users/sean/Documents/GitHub/IFN562_Assignment2/Game/Game/obj/Debug/net7.0/refint/Game.dll
+/Users/sean/Documents/GitHub/IFN562_Assignment2/Game/Game/obj/Debug/net7.0/Game.pdb
+/Users/sean/Documents/GitHub/IFN562_Assignment2/Game/Game/obj/Debug/net7.0/Game.genruntimeconfig.cache
+/Users/sean/Documents/GitHub/IFN562_Assignment2/Game/Game/obj/Debug/net7.0/ref/Game.dll
