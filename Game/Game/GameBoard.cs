@@ -3,6 +3,22 @@ namespace Game
 {
 	public class GameBoard
 	{
+		private static GameBoard instance = null;
+		private GameBoard()
+		{
+
+		}
+
+		public static GameBoard Instance
+		{
+			get {
+				if (instance == null)
+				{
+					instance = new GameBoard();
+				}
+				return instance;
+			}
+		}
 
 		public void startGame()
 		{

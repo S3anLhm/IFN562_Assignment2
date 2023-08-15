@@ -6,8 +6,11 @@ namespace Game
     {
         static void Main(String[] args)
         {
-            GameBoard test = new GameBoard();
-            test.startGame();
+            GameBoard mySingleton = GameBoard.Instance;
+            mySingleton.startGame();
+
+
+
         }
     }
 }
