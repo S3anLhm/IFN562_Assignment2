@@ -30,40 +30,31 @@ namespace Game
 
 				//Create GameID
 				int gameID;
+				dynamic x = null;
 				bool success = int.TryParse(gameChoice, out gameID);
 
 
-				if(success && (gameID == 1 || gameID == 2))
+				if(success && (gameID == 1))
 				{
-                    createGame(gameID);
-				}
-				else
+					x = new SOS();
+					Console.WriteLine("Thank you for choosing to play SOS!");
+
+
+				}else if (success && (gameID == 2)){
+					x = new Connect4();
+                    Console.WriteLine("Thank you for choosing to play Connect 4!");
+                }
+
+                else
 				{
 					Console.WriteLine("Please enter the correct option");
 				}
+
+				x.game();
 				
-               
-
-
-                //Ask user for gameOption
-
-                // Display everything
-
-                //Startgame
-
             }
 		}
 
-		public void createGame(int gameID)
-		{
-			if(gameID == 1)
-			{
-				SOS sos = new SOS();
-			}else if(gameID == 2)
-			{
-				//ConnectFour;
-			}
-		}
 	}
 }
 

@@ -1,13 +1,11 @@
 ﻿using System;
 namespace Game
 {
-	internal class SOS : Game
-	{
-       
-        
+    internal class Connect4 : Game
+    {
         protected override void CreateGame()
         {
-            Console.WriteLine("SOS Game Created");
+            Console.WriteLine("Game Created");
         }
     }
 }

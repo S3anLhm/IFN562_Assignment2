@@ -9,9 +9,6 @@ namespace Game
             GameBoard mySingleton = GameBoard.Instance;
             mySingleton.startGame();
 
-
-    
-
         }
     }
 }
