@@ -5,7 +5,7 @@ namespace Game
     {
         protected override void CreateGame()
         {
-            Console.WriteLine("Game Created");
+            Console.WriteLine("Connect 4 Game Created");
         }
     }
 }
