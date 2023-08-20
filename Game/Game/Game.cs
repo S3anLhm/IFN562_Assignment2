@@ -1,16 +1,31 @@
 ﻿using System;
-namespace Game
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Assignment2
 {
-    internal abstract class Game
+    public abstract class Game
     {
-        public void game()
+        public int _GameID { get; private set; }
+
+        public Game(int _gameID)
         {
-            CreateGame();
+            _GameID = _gameID;
         }
 
-        protected abstract void CreateGame();
+        public string player;
+        public void playGame()
+        {
+            displayGame();
+            checkWin(player);
+            getRemainingMoves();
+            resetAll();
+        }
+        protected abstract void displayGame();
+        protected abstract int checkWin(string player);
+        protected abstract int getRemainingMoves();
+        protected abstract void resetAll();
     }
-  
-
 }
-
