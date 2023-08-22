@@ -1,66 +1,65 @@
 ﻿using System;
-namespace Game
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Assignment2
 {
-	public class GameBoard
-	{
-		private static GameBoard instance = null;
+    public class GameBoard
+    {
+        private GameBoard()
+        {
 
-		private GameBoard()
-		{
+        }
 
-		}
+        private static GameBoard instance;
 
-		public static GameBoard Instance
-		{
-			get {
-				if (instance == null)
-				{
-					instance = new GameBoard();
-				}
-				return instance;
-			}
-		}
+        public static GameBoard Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new GameBoard();
+                }
+                return instance;
+            }
+        }
 
-		public void startGame()
-		{
-			while (true)
-			{
-				Console.WriteLine("Please enter the game you want to play 1.SOS or 2.ConnectFour :");
-				string gameChoice = Console.ReadLine();
+        public void startGame()
+        {
+            while (true)
+            {
+                Console.WriteLine("Please enter the game you want to play 1.SOS 2.ConnectFour:");
+                string gameChoice = Console.ReadLine();
 
-				//Create GameID
-				int gameID;
-				dynamic x = null;
+                //Create GameID
+                int gameID;
+                bool success = int.TryParse(gameChoice, out gameID);
 
-				bool success = int.TryParse(gameChoice, out gameID);
+                Game game = null;
 
-
-				if(success && (gameID == 1))
-				{
-
-					x = new SOS();
-					Console.WriteLine("Thank you for choosing to play SOS!");
-
-
-				}else if (success && (gameID == 2)){
-					x = new Connect4();
-                    Console.WriteLine("Thank you for choosing to play Connect 4!");
+                if (success && (gameID == 1))
+                {
+                    game = new SOS(gameID);
+                }
+                else
+                {
+                    Console.WriteLine("Please enter the correct option");
                 }
 
+                //Startgame and display everything
+                if (game != null)
+                {
+                    Console.Clear();
+                    game.playGame();
+                }
                 else
-				{
-					Console.WriteLine("Please enter the correct option");
-				}
-
-				x.game();
-				
+                {
+                    Console.WriteLine("Game not selected.");
+                }
             }
-		}
-
-	}
+        }
+    }
 }
-
-//User choose SOS
-//Game detects user's game option
-//Pulls game from SOS -> Print grid
-

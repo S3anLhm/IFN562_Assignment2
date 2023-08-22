@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Game
+namespace Assignment2
 {
     class Program
     {
@@ -8,7 +8,6 @@ namespace Game
         {
             GameBoard mySingleton = GameBoard.Instance;
             mySingleton.startGame();
-
         }
     }
 }
