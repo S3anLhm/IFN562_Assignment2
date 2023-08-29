@@ -16,16 +16,17 @@ namespace Assignment2
         }
 
         public string player;
+        public char[] grid;
         public void playGame()
         {
             displayGame();
-            checkWin(player);
-            getRemainingMoves();
-            resetAll();
+            checkWin(player, grid);
+            getRemainingMoves(grid);
+            //resetAll();
         }
         protected abstract void displayGame();
-        protected abstract int checkWin(string player);
-        protected abstract int getRemainingMoves();
-        protected abstract void resetAll();
+        protected abstract int checkWin(string player, char[] grid);
+        protected abstract int getRemainingMoves(char[] grid);
+       // protected abstract void resetAll();
     }
 }

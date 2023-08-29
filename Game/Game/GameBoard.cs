@@ -28,7 +28,7 @@ namespace Assignment2
         }
 
         public void startGame()
-        {
+        {   
             while (true)
             {
                 Console.WriteLine("Please enter the game you want to play 1.SOS 2.ConnectFour:");

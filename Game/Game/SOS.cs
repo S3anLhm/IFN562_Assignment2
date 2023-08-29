@@ -10,221 +10,182 @@ namespace Assignment2
     {
         public SOS(int _gameID) : base(_gameID) { }
 
-        private string currentPlayer = "O";
-        private int currentRow = 0;
-        private int currentColumn = 0;
-        private static string[,] board = new string[3, 3]
-        {
-            {"0", "1", "2" },
-            {"3", "4", "5" },
-            {"6", "7", "8" },
-        };
-
-        private void printBoard()
-        {
-            Console.WriteLine(currentPlayer + ", please make your move!");
-            //print out rows and columns
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    if (i == currentRow && j == currentColumn)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Magenta;
-                        Console.Write(board[i, j] + " ");
-                        Console.ResetColor();
-                    }
-                    else
-                    {
-                        Console.Write(board[i, j] + " ");
-                    }
-                }
-                //leave space
-                Console.WriteLine();
-            }
-        }
         protected override void displayGame()
         {
-            bool playing = true;
-            while (playing)
-            {
-                //Allow first player to choose their symbol
-                bool incorrectPlayerChoice = false;
-                do
-                {
-                    Console.WriteLine("Which player will go first?");
-                    Console.WriteLine("1 for S");
-                    Console.WriteLine("2 for 0");
-                    string playerChoice = Console.ReadLine();
+            char[] gridNum = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+            int player = 1;
+            int p1Score = 0;
+            int p2Score = 0;
+            int flag = 0;
+            char ch;
+            int choice;
+            string test = "x";
 
-                    if (playerChoice.Trim().Equals("1"))
+            do
+            {
+                Console.WriteLine("Welcome to the game of SOS");
+                Console.WriteLine("\n");
+
+                //Player's turn
+                if (player % 2 == 0)
+                {
+                    Console.WriteLine("Player 2's turn");
+                }
+                else
+                {
+                    Console.WriteLine("Player 1's turn");
+                }
+
+                Console.WriteLine("\n");
+
+                //Display Board
+                printBoard(gridNum);
+
+                Console.WriteLine("Please enter the index of the grid where you want to place a symbol: ");
+                string input = Console.ReadLine();
+
+                bool success = int.TryParse(input, out choice);
+
+                if (success && (gridNum[choice] != 'S' && gridNum[choice] != 'O'))
+                {
+                    if (player % 2 == 0)
                     {
-                        currentPlayer = "S";
-                    }
-                    else if (playerChoice.Trim().Equals("2"))
-                    {
-                        currentPlayer = "O";
+                        //If player 1 enter s or o 
+                        Console.WriteLine("Please enter if you want to place the symbol 'S' or 'O' on the grid");
+                        ch = Convert.ToChar(Console.ReadLine());
+                        gridNum[choice] = ch;
+                        player++;
+
                     }
                     else
                     {
-                        Console.WriteLine("Invalid input. Please select either 1 or 2.");
-                    }
-                } while (incorrectPlayerChoice);
+                        Console.WriteLine("Please enter if you want to place the symbol 'S' or 'O' on the grid");
+                        ch = Convert.ToChar(Console.ReadLine());
+                        gridNum[choice] = ch;
+                        Console.WriteLine("p1 score : {0}", p1Score);
+                        player++;
 
-                while (true)
+                    }
+                }
+                else
                 {
-                    Console.Clear();
-                    //Display the board
-                    printBoard();
-                    ConsoleKeyInfo keyInfo = Console.ReadKey();
-                    if (keyInfo.Key == ConsoleKey.RightArrow)
-                    {
-                        currentColumn++;
-                        currentColumn = (currentColumn >= 3) ? 0 : currentColumn;
-                    }
-                    else if (keyInfo.Key == ConsoleKey.LeftArrow)
-                    {
-                        currentColumn--;
-                        currentColumn = (currentColumn < 0) ? 2 : currentColumn;
-                    }
-                    else if (keyInfo.Key == ConsoleKey.UpArrow)
-                    {
-                        currentRow--;
-                        currentRow = (currentRow < 0) ? 2 : currentRow;
-                    }
-                    else if (keyInfo.Key == ConsoleKey.DownArrow)
-                    {
-                        currentRow++;
-                        currentRow = (currentRow >= 3) ? 0 : currentRow;
-                    }
-                    else if (keyInfo.Key == ConsoleKey.Enter)
-                    {
-                        string value = board[currentRow, currentColumn];
-                        if (value != "S" && value != "O")
-                        {
-                            board[currentRow, currentColumn] = currentPlayer;
-                            int result = checkWin(currentPlayer);
-                            if (result == 2)
-                            {
-                                Console.Clear();
-                                printBoard();
-                                Console.WriteLine(currentPlayer + "wins!");
-                                Task.Delay(1000).Wait();
-                            }
-                            else if (result == 1)
-                            {
-                                Console.Clear();
-                                printBoard();
-                                Console.WriteLine("Draw!");
-                                Task.Delay(1000).Wait();
-                            }
-                            else
-                            {
-                                currentPlayer = (currentPlayer == "O") ? "S" : "O";
-                                continue;
-                            }
+                    Console.WriteLine("Sorry the row {0} is already marked with {1}", choice, gridNum[choice]);
+                    Console.WriteLine("\n");
+                    Console.WriteLine("Please wait 2 second board is loading again.....");
+                    Thread.Sleep(2000);
+                }
 
-                            //Ask players if they want to continue playing after a Win or Draw
-                            string replayChoice;
-                            Console.WriteLine("Do you want to play SOS again?");
-                            Console.WriteLine("1. Yes");
-                            Console.WriteLine("2. No");
-                            replayChoice = Console.ReadLine();
-                            if (replayChoice.Equals("2"))
-                            {
-                                resetAll();
-                                playing = false;
-                            }
-                            else
-                            {
-                                resetAll();
-                                Console.Clear();
-                            }
-                            break;
-                        }
-                        else
-                        {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("This already filled");
-                            Console.ResetColor();
-                            Task.Delay(2000).Wait();
-                        }
+                //Check Move (Validity)
+                flag = checkWin(test, gridNum);
+
+                //If checkMove plus -> Add Score to player 
+                if (flag == 2)
+                {
+                    if (player % 2 == 0)
+                    {
+                        p1Score++;
+
+                    }
+                    else
+                    {
+                        p2Score++;
+
                     }
                 }
 
+
+                int x = getRemainingMoves(gridNum);
+                Console.WriteLine(x);
+
+
+                //Check RemainingMove and CheckWin
+            } while (getRemainingMoves(gridNum) != 1);
+
+            Console.Clear();
+            printBoard(gridNum);
+
+            if (p1Score > p2Score)
+            {
+                Console.WriteLine("Player 1 Wins with a score of {0}.", p1Score);
+            }
+            else if (p2Score > p1Score)
+            {
+                Console.WriteLine("Player 2 Wins with a score of {0}.", p2Score);
+            }
+            else
+            {
+                Console.WriteLine("Draw. P1 : {0}, P2 : {1}.", p1Score, p2Score);
             }
 
         }
-        protected override int checkWin(string player)
+
+        private void printBoard(char[] gridNum)
+        {
+            Console.WriteLine("     |     |      ");
+            Console.WriteLine("  {0}  |  {1}  |  {2}", gridNum[1], gridNum[2], gridNum[3]);
+            Console.WriteLine("_____|_____|_____ ");
+            Console.WriteLine("     |     |      ");
+            Console.WriteLine("  {0}  |  {1}  |  {2}", gridNum[4], gridNum[5], gridNum[6]);
+            Console.WriteLine("_____|_____|_____ ");
+            Console.WriteLine("     |     |      ");
+            Console.WriteLine("  {0}  |  {1}  |  {2}", gridNum[7], gridNum[8], gridNum[9]);
+            Console.WriteLine("     |     |      ");
+        }
+
+        protected override int checkWin(string player, char[] gridNum)
         {
             int result = 0;
             //horizontal
-            if (board[0, 0] == "S" && board[0, 1] == "O" && board[0, 2] == "S")
+            if (gridNum[1] == 'S' && gridNum[2] == 'O' && gridNum[3] == 'S')
             {
                 result = 2;
             }
-            if (board[1, 0] == "S" && board[1, 1] == "O" && board[1, 2] == "S")
+            if (gridNum[4] == 'S' && gridNum[5] == 'O' && gridNum[6] == 'S')
             {
                 result = 2;
             }
-            if (board[2, 0] == "S" && board[2, 1] == "O" && board[2, 2] == "S")
+            if (gridNum[7] == 'S' && gridNum[8] == 'O' && gridNum[9] == 'S')
             {
                 result = 2;
             }
             //vertical
-            if (board[0, 0] == "S" && board[1, 0] == "O" && board[2, 0] == "S")
+            if (gridNum[1] == 'S' && gridNum[4] == 'O' && gridNum[7] == 'S')
             {
                 result = 2;
             }
-            if (board[0, 1] == "S" && board[1, 1] == "O" && board[2, 1] == "S")
+            if (gridNum[2] == 'S' && gridNum[5] == 'O' && gridNum[8] == 'S')
             {
                 result = 2;
             }
-            if (board[0, 2] == "S" && board[1, 2] == "O" && board[2, 2] == "S")
+            if (gridNum[3] == 'S' && gridNum[6] == 'O' && gridNum[9] == 'S')
             {
                 result = 2;
             }
             //diagonal
-            if (board[0, 0] == "S" && board[1, 1] == "O" && board[2, 2] == "S")
+            if (gridNum[1] == 'S' && gridNum[5] == 'O' && gridNum[9] == 'S')
             {
                 result = 2;
             }
-            if (board[0, 2] == "S" && board[1, 1] == "O" && board[2, 0] == "S")
+            if (gridNum[3] == 'S' && gridNum[5] == 'O' && gridNum[7] == 'S')
             {
                 result = 2;
             }
-            //draw
-            //if result is 0 and no moves then draw
-            if (result == 0 && getRemainingMoves() == 0)
-            {
-                return 1;
-            }
+
+            //0 or 2
             return result;
         }
-        protected override int getRemainingMoves()
+        protected override int getRemainingMoves(char[] gridNum)
         {
-            int count = 0;
-            for (int i = 0; i < 3; i++)
-
-                for (int j = 0; j < 3; j++)
-                {
-                    if (board[i, j] == "0" || board[i, j] == "1" || board[i, j] == "2" || board[i, j] == "3" || board[i, j] == "4" || board[i, j] == "5" || board[i, j] == "6" || board[i, j] == "7" || board[i, j] == "8")
-                    {
-                        count++;
-                    }
-                }
-            return count;
-        }
-        protected override void resetAll()
-        {
-            currentRow = 0;
-            currentColumn = 0;
-            board = new string[3, 3]
+            if (gridNum[1] != '1' && gridNum[2] != '2' && gridNum[3] != '3' && gridNum[4] != '4' && gridNum[5] != '5' && gridNum[6] != '6' && gridNum[7] != '7' && gridNum[8] != '8' && gridNum[9] != '9')
             {
-                {"0", "1", "2" },
-                {"3", "4", "5" },
-                {"6", "7", "8" },
-            };
+                //No More Moves
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
         }
+
     }
 }
