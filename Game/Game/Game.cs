@@ -20,12 +20,12 @@ namespace Assignment2
         public void playGame()
         {
             displayGame();
-            checkWin(player, grid);
+     
             getRemainingMoves(grid);
             //resetAll();
         }
         protected abstract void displayGame();
-        protected abstract int checkWin(string player, char[] grid);
+        //protected abstract int checkWin(string player, char[] grid);
         protected abstract int getRemainingMoves(char[] grid);
        // protected abstract void resetAll();
     }

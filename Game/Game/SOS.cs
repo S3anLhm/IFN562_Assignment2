@@ -13,6 +13,7 @@ namespace Assignment2
         protected override void displayGame()
         {
             char[] gridNum = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+            bool[] combinationChecked = { false, false, false, false, false, false, false, false };
             int player = 1;
             int p1Score = 0;
             int p2Score = 0;
@@ -76,7 +77,7 @@ namespace Assignment2
                 }
 
                 //Check Move (Validity)
-                flag = checkWin(test, gridNum);
+                flag = CheckScore(gridNum,combinationChecked);
 
                 //If checkMove plus -> Add Score to player 
                 if (flag == 2)
@@ -132,46 +133,63 @@ namespace Assignment2
             Console.WriteLine("     |     |      ");
         }
 
-        protected override int checkWin(string player, char[] gridNum)
+
+        public static int CheckScore(char[] gridNum, bool[] combinationsChecked)
         {
             int result = 0;
-            //horizontal
-            if (gridNum[1] == 'S' && gridNum[2] == 'O' && gridNum[3] == 'S')
+
+            // Horizontal combinations
+            if (!combinationsChecked[0] && gridNum[1] == 'S' && gridNum[2] == 'O' && gridNum[3] == 'S')
             {
                 result = 2;
+                combinationsChecked[0] = true;
             }
-            if (gridNum[4] == 'S' && gridNum[5] == 'O' && gridNum[6] == 'S')
+            else if (!combinationsChecked[1] && gridNum[4] == 'S' && gridNum[5] == 'O' && gridNum[6] == 'S')
             {
                 result = 2;
+                combinationsChecked[1] = true;
             }
-            if (gridNum[7] == 'S' && gridNum[8] == 'O' && gridNum[9] == 'S')
+            else if (!combinationsChecked[2] && gridNum[7] == 'S' && gridNum[8] == 'O' && gridNum[9] == 'S')
             {
                 result = 2;
-            }
-            //vertical
-            if (gridNum[1] == 'S' && gridNum[4] == 'O' && gridNum[7] == 'S')
-            {
-                result = 2;
-            }
-            if (gridNum[2] == 'S' && gridNum[5] == 'O' && gridNum[8] == 'S')
-            {
-                result = 2;
-            }
-            if (gridNum[3] == 'S' && gridNum[6] == 'O' && gridNum[9] == 'S')
-            {
-                result = 2;
-            }
-            //diagonal
-            if (gridNum[1] == 'S' && gridNum[5] == 'O' && gridNum[9] == 'S')
-            {
-                result = 2;
-            }
-            if (gridNum[3] == 'S' && gridNum[5] == 'O' && gridNum[7] == 'S')
-            {
-                result = 2;
+                combinationsChecked[2] = true;
             }
 
-            //0 or 2
+            // Vertical combinations
+            if (result != 2)
+            {
+                if (!combinationsChecked[3] && gridNum[1] == 'S' && gridNum[4] == 'O' && gridNum[7] == 'S')
+                {
+                    result = 2;
+                    combinationsChecked[3] = true;
+                }
+                else if (!combinationsChecked[4] && gridNum[2] == 'S' && gridNum[5] == 'O' && gridNum[8] == 'S')
+                {
+                    result = 2;
+                    combinationsChecked[4] = true;
+                }
+                else if (!combinationsChecked[5] && gridNum[3] == 'S' && gridNum[6] == 'O' && gridNum[9] == 'S')
+                {
+                    result = 2;
+                    combinationsChecked[5] = true;
+                }
+            }
+
+            // Diagonal combinations
+            if (result != 2)
+            {
+                if (!combinationsChecked[6] && gridNum[1] == 'S' && gridNum[5] == 'O' && gridNum[9] == 'S')
+                {
+                    result = 2;
+                    combinationsChecked[6] = true;
+                }
+                else if (!combinationsChecked[7] && gridNum[3] == 'S' && gridNum[5] == 'O' && gridNum[7] == 'S')
+                {
+                    result = 2;
+                    combinationsChecked[7] = true;
+                }
+            }
+
             return result;
         }
         protected override int getRemainingMoves(char[] gridNum)

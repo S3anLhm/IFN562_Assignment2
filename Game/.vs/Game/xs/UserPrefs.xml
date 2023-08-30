@@ -1,18 +1,18 @@
 ﻿<Properties StartupConfiguration="{18F5F242-2B56-42FB-A347-1F29E72A82D9}|Default">
-  <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
-  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workbench ActiveDocument="Game/SOS.cs">
     <Files>
-      <File FileName="Game/Program.cs" Line="12" Column="6" IsPinned="True" />
+      <File FileName="Game/Program.cs" Line="7" Column="38" IsPinned="True" />
       <File FileName="Game/GameBoard.cs" Line="4" Column="19" />
-      <File FileName="Game/SOS.cs" Line="1" Column="1" />
+      <File FileName="Game/SOS.cs" Line="197" Column="102" />
+      <File FileName="Game/Game.cs" Line="33" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="Game">
-            <Node name="Game" expanded="True">
+            <Node name="Game">
               <Node name="SOS.cs" selected="True" />
             </Node>
           </Node>
@@ -20,8 +20,9 @@
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
-  <MultiItemStartupConfigurations />
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.ItemProperties.Game PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
 </Properties>
