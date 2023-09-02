@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -45,45 +46,44 @@ namespace Assignment2
             }
         }
 
-        protected override void chooseOpponent(out Player player1, out Player player2)
+        private void chooseOpponent(out Player player1, out Player player2)
         {
-            //Ask first player for opponent choice
-            bool QUIT = true;
-            //string opponentChoice = "1";
-            Console.WriteLine("Please choose your opponent, 1.Human Player or 2. Computer");
-
-            int opponentChoice = int.Parse(Console.ReadLine());
-
-
-            //player1 = null;
-            //player2 = null;
-
-            while (!QUIT)
+            while (true)
             {
-                if (opponentChoice == 1)
+                //Ask first player for opponent choice
+                //bool QUIT = true;
+                //string opponentChoice = "1";
+                Console.WriteLine("Please choose your opponent, 1.Human Player or 2. Computer");
+                int opponentChoice;
+                bool success = int.TryParse(Console.ReadLine(), out opponentChoice);
+
+                if (success && opponentChoice == 1)
                 {
                     player1 = new HumanPlayer(1);
                     player2 = new HumanPlayer(2);
-                    assignSymbols(ref player1, ref player2);
-                    QUIT = true;
+                    break;
+
                 }
-                else if (opponentChoice == 2)
+                else if (success && opponentChoice == 2)
                 {
                     player1 = new HumanPlayer(1);
                     player2 = new ComputerPlayer(2);
-                    assignSymbols(ref player1, ref player2);
-                    QUIT = true;
+                    break;
                 }
                 else
                 {
                     Console.WriteLine("Not a valid option. Try again.");
+                    player1 = null;
+                    player2 = null;
                 }
             }
+            resetAll();
         }
-        private void assignSymbols(ref Player player1, ref Player player2)
+        private void assignSymbols(out string player1Symbol, out string player2Symbol)
         {
             //Allow first player to choose their symbol
-            bool incorrectPlayerChoice = false;
+
+            bool incorrectPlayerChoice = true;
             do
             {
                 Console.WriteLine("First player please choose your symbol");
@@ -93,198 +93,201 @@ namespace Assignment2
 
                 if (playerChoice.Trim().Equals("1"))
                 {
-                    player1.Symbol = "X";
-                    player2.Symbol = "O";
+                    player1Symbol = "X";
+                    player2Symbol = "O";
                     incorrectPlayerChoice = false;
                 }
                 else if (playerChoice.Trim().Equals("2"))
                 {
-                    player1.Symbol = "O";
-                    player2.Symbol = "X";
+                    player1Symbol = "O";
+                    player2Symbol = "X";
                     incorrectPlayerChoice = false;
                 }
                 else
                 {
                     Console.WriteLine("Invalid input. Please select either 1 or 2.");
+                    player1Symbol = null;
+                    player2Symbol = null;
                 }
             } while (incorrectPlayerChoice);
         }
-        protected override void displayGame(Player player1, Player player2)
+        protected override void displayGame()
         {
-            string currentPlayer = player1.Symbol;
-            bool scenarioHuman = true;
-            bool scenarioComputer = true;
-            while (scenarioComputer)
+            Player player1;
+            Player player2;
+            string player1Symbol;
+            string player2Symbol;
+            chooseOpponent(out player1, out player2);
+            assignSymbols(out player1Symbol, out player2Symbol);
+            string currentPlayer = player1Symbol;
+            bool gameInProgress = true;
+            while (gameInProgress)
             {
-                if (player2 is ComputerPlayer)
+                Console.Clear();
+                printBoard();
+                if (currentPlayer == player1Symbol)
                 {
-                    if (currentPlayer == player1.Symbol)
+                    ConsoleKeyInfo KeyInfo = Console.ReadKey();
+                    if (KeyInfo.Key == ConsoleKey.RightArrow)
                     {
-                        ConsoleKeyInfo keyInfo = Console.ReadKey();
-                        if (keyInfo.Key == ConsoleKey.RightArrow)
+                        currentColumn++;
+                        currentColumn = (currentColumn >= 7) ? 0 : currentColumn;
+                    }
+                    else if (KeyInfo.Key == ConsoleKey.LeftArrow)
+                    {
+                        currentColumn--;
+                        currentColumn = (currentColumn < 0) ? 6 : currentColumn;
+                    }
+                    else if (KeyInfo.Key == ConsoleKey.Enter)
+                    {
+                        int row;
+                        // Find the first available row bottom to top
+                        for (row = 5; row >= 0; row--)
                         {
-                            player1.moveRightConnectFour(ref currentColumn);
-                        }
-                        else if (keyInfo.Key == ConsoleKey.LeftArrow)
-                        {
-                            player1.moveLeftConnectFour(ref currentColumn);
-                        }
-                        else if (keyInfo.Key == ConsoleKey.Enter)
-                        {
-                            player1.makeMoveConnectFour(ref currentColumn, ref board, ref currentPlayer);
-                            int result = checkWin(currentPlayer);
-                            if (result == 2)
+                            if (board[row, currentColumn] != "X" && board[row, currentColumn] != "O")
                             {
-                                Console.Clear();
-                                printBoard();
-                                Console.WriteLine(currentPlayer + " wins!");
-                                Task.Delay(1000).Wait();
+                                break;
                             }
-                            else if (result == 1)
+                        }
+                        if (row >= 0)
+                        {
+                            board[row, currentColumn] = currentPlayer;
+                        }
+                        else
+                        {
+                            currentPlayer = (currentPlayer == "O") ? "X" : "O";
+                        }
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("This already filled");
+                        Console.ResetColor();
+                        Task.Delay(2000).Wait();
+                    }
+                }
+                else if (currentPlayer == player2Symbol)
+                {
+                    if (player2 is HumanPlayer)
+                    {
+                        ConsoleKeyInfo KeyInfo = Console.ReadKey();
+                        if (KeyInfo.Key == ConsoleKey.RightArrow)
+                        {
+                            currentColumn++;
+                            currentColumn = (currentColumn >= 7) ? 0 : currentColumn;
+                        }
+                        else if (KeyInfo.Key == ConsoleKey.LeftArrow)
+                        {
+                            currentColumn--;
+                            currentColumn = (currentColumn < 0) ? 6 : currentColumn;
+                        }
+                        else if (KeyInfo.Key == ConsoleKey.Enter)
+                        {
+                            int row;
+                            // Find the first available row bottom to top
+                            for (row = 5; row >= 0; row--)
                             {
-                                Console.Clear();
-                                printBoard();
-                                Console.WriteLine("Draw!");
-                                Task.Delay(1000).Wait();
+                                if (board[row, currentColumn] != "X" && board[row, currentColumn] != "O")
+                                {
+                                    break;
+                                }
+                            }
+                            if (row >= 0)
+                            {
+                                board[row, currentColumn] = currentPlayer;
                             }
                             else
                             {
-                                currentPlayer = (currentPlayer == player1.Symbol) ? player2.Symbol : player1.Symbol;
-                                break;
-                            }
-                            //Ask players if they want to continue playing after a Win or Draw
-                            string replayChoice;
-                            Console.WriteLine("Do you want to play Connect Four again?");
-                            Console.WriteLine("1. Yes");
-                            Console.WriteLine("2. No");
-                            replayChoice = Console.ReadLine();
-                            if (replayChoice.Equals("2"))
-                            {
-                                resetAll();
-                                break;
-                            }
-                            else
-                            {
-                                resetAll();
-                                Console.Clear();
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine("This already filled");
+                                Console.ResetColor();
+                                Task.Delay(2000).Wait();
                             }
                         }
                     }
-                    if (currentPlayer == player2.Symbol)
+                    else if (player2 is ComputerPlayer)
                     {
                         ComputerPlayer computerPlayer = (ComputerPlayer)player2;
                         ConsoleKeyInfo simulatedKeyPress = computerPlayer.SimulateRandomKeyPress();
                         if (simulatedKeyPress.Key == ConsoleKey.RightArrow)
                         {
-                            player2.moveRightConnectFour(ref currentColumn);
+                            currentColumn++;
+                            currentColumn = (currentColumn >= 7) ? 0 : currentColumn;
                         }
                         else if (simulatedKeyPress.Key == ConsoleKey.LeftArrow)
                         {
-                            player2.moveLeftConnectFour(ref currentColumn);
+                            currentColumn--;
+                            currentColumn = (currentColumn < 0) ? 6 : currentColumn;
                         }
                         else if (simulatedKeyPress.Key == ConsoleKey.Enter)
                         {
-                            player2.makeMoveConnectFour(ref currentColumn, ref board, ref currentPlayer);
-                            int result = checkWin(currentPlayer);
-                            if (result == 2)
+                            int row;
+                            // Find the first available row bottom to top
+                            for (row = 5; row >= 0; row--)
                             {
-                                Console.Clear();
-                                printBoard();
-                                Console.WriteLine(currentPlayer + " wins!");
-                                Task.Delay(1000).Wait();
+                                if (board[row, currentColumn] != "X" && board[row, currentColumn] != "O")
+                                {
+                                    break;
+                                }
                             }
-                            else if (result == 1)
+                            if (row >= 0)
                             {
-                                Console.Clear();
-                                printBoard();
-                                Console.WriteLine("Draw!");
-                                Task.Delay(1000).Wait();
+                                board[row, currentColumn] = currentPlayer;
                             }
                             else
                             {
-                                currentPlayer = (currentPlayer == player1.Symbol) ? player2.Symbol : player1.Symbol;
-                                break;
-                            }
-                            //Ask players if they want to continue playing after a Win or Draw
-                            string replayChoice;
-                            Console.WriteLine("Do you want to play Connect Four again?");
-                            Console.WriteLine("1. Yes");
-                            Console.WriteLine("2. No");
-                            replayChoice = Console.ReadLine();
-                            if (replayChoice.Equals("2"))
-                            {
-                                resetAll();
-                                break;
-                            }
-                            else
-                            {
-                                resetAll();
-                                Console.Clear();
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine("This already filled");
+                                Console.ResetColor();
+                                Task.Delay(2000).Wait();
                             }
                         }
                     }
-                    scenarioComputer = false;
                 }
-            }
-            while (scenarioHuman)
-            {
-                if (player2 is HumanPlayer && (currentPlayer == player1.Symbol || currentPlayer == player2.Symbol))
+                //Replay option
+                int result = checkWin(currentPlayer);
+                if (result == 2)
                 {
-                    ConsoleKeyInfo keyInfo = Console.ReadKey();
-                    if (keyInfo.Key == ConsoleKey.RightArrow)
-                    {
-                        player2.moveRightConnectFour(ref currentColumn);
-                    }
-                    else if (keyInfo.Key == ConsoleKey.LeftArrow)
-                    {
-                        player2.moveLeftConnectFour(ref currentColumn);
-                    }
-                    else if (keyInfo.Key == ConsoleKey.Enter)
-                    {
-                        player2.makeMoveConnectFour(ref currentColumn, ref board, ref currentPlayer);
-                        int result = checkWin(currentPlayer);
-                        if (result == 2)
-                        {
-                            Console.Clear();
-                            printBoard();
-                            Console.WriteLine(currentPlayer + " wins!");
-                            Task.Delay(1000).Wait();
-                        }
-                        else if (result == 1)
-                        {
-                            Console.Clear();
-                            printBoard();
-                            Console.WriteLine("Draw!");
-                            Task.Delay(1000).Wait();
-                        }
-                        else
-                        {
-                            currentPlayer = (currentPlayer == player1.Symbol) ? player2.Symbol : player1.Symbol;
-                            break;
-                        }
-                        //Ask players if they want to continue playing after a Win or Draw
-                        string replayChoice;
-                        Console.WriteLine("Do you want to play Connect Four again?");
-                        Console.WriteLine("1. Yes");
-                        Console.WriteLine("2. No");
-                        replayChoice = Console.ReadLine();
-                        if (replayChoice.Equals("2"))
-                        {
-                            resetAll();
-                            break;
-                        }
-                        else
-                        {
-                            resetAll();
-                            Console.Clear();
-                        }
-                    }
+                    Console.Clear();
+                    printBoard();
+                    Console.WriteLine(currentPlayer + " wins!");
+                    Task.Delay(1000).Wait();
+                    askForReplay(ref gameInProgress);
                 }
-                scenarioHuman = false;
+                else if (result == 1)
+                {
+                    Console.Clear();
+                    printBoard();
+                    Console.WriteLine("Draw!");
+                    Task.Delay(1000).Wait();
+                    askForReplay(ref gameInProgress);
+                }
+                else
+                {
+                    currentPlayer = (currentPlayer == player1Symbol) ? player2Symbol : player1Symbol;
+                }
             }
         }
         //end of display game
 
+        private void askForReplay(ref bool gameInProgress)
+        {
+            string replayChoice;
+            Console.WriteLine("Do you want to play Connect Four again?");
+            Console.WriteLine("1. Yes");
+            Console.WriteLine("2. No");
+            replayChoice = Console.ReadLine();
+            if (replayChoice.Equals("2"))
+            {
+                resetAll();
+                gameInProgress = false;
+            }
+            else
+            {
+                resetAll();
+                Console.Clear();
+            }
+        }
         //win = 2; draw = 1; nothing = 0
         protected override int checkWin(string symbol)
         {
@@ -369,5 +372,130 @@ namespace Assignment2
                 {"-", "-", "-", "-", "-", "-", "-"},
             };
         }
+        //public void handlePlayerMove(ref string playerSymbol, ref bool continueGame, ref int currentColumn)
+        //{
+        //    ConsoleKeyInfo keyInfo = Console.ReadKey();
+        //    if (keyInfo.Key == ConsoleKey.RightArrow)
+        //    {
+        //        currentColumn++;
+        //        currentColumn = (currentColumn >= 7) ? 0 : currentColumn;
+        //    }
+        //    else if (keyInfo.Key == ConsoleKey.LeftArrow)
+        //    {
+        //        currentColumn--;
+        //        currentColumn = (currentColumn < 0) ? 6 : currentColumn;
+        //    }
+        //    else if (keyInfo.Key == ConsoleKey.Enter)
+        //    {
+        //        bool invalidMove = true;
+        //        while (invalidMove)
+        //        {
+        //            for (int row = 5; row >= 0; row--)
+        //            {
+        //                if (board[row, currentColumn] != "X" && board[row, currentColumn] != "O")
+        //                {
+        //                    board[row, currentColumn] = playerSymbol;
+        //                    int result = checkWin(playerSymbol);
+
+        //                    if (result == 2)
+        //                    {
+        //                        Console.Clear();
+        //                        printBoard();
+        //                        Console.WriteLine(playerSymbol + " wins!");
+        //                        break;
+        //                    }
+        //                    else if (result == 1)
+        //                    {
+        //                        Console.Clear();
+        //                        printBoard();
+        //                        Console.WriteLine("Draw!");
+        //                        break;
+        //                    }
+        //                    else
+        //                    {
+        //                        playerSymbol = (playerSymbol == "O") ? "X" : "O";
+        //                        continue;
+        //                    }
+        //                }
+        //                else if (board[0, currentColumn] == "X" || board[0, currentColumn] == "O")
+        //                {
+        //                    Console.ForegroundColor = ConsoleColor.Red;
+        //                    Console.WriteLine("This column is already full so please choose another one!");
+        //                    Console.ResetColor();
+        //                    Task.Delay(2000).Wait();
+        //                    break;
+        //                }
+        //            }
+        //            invalidMove = false;
+        //        }
+        //    }
+        //}
+        //public void handleComputerMove(Player computer, ref string playerSymbol, ref bool continueGame)
+        //{
+        //    ComputerPlayer computerPlayer = (ComputerPlayer)computer;
+        //    ConsoleKeyInfo simulatedKeyPress = computerPlayer.SimulateRandomKeyPress();
+        //    if (simulatedKeyPress.Key == ConsoleKey.RightArrow)
+        //    {
+        //        currentColumn++;
+        //        currentColumn = (currentColumn >= 7) ? 0 : currentColumn;
+        //    }
+        //    else if (simulatedKeyPress.Key == ConsoleKey.LeftArrow)
+        //    {
+        //        currentColumn--;
+        //        currentColumn = (currentColumn < 0) ? 6 : currentColumn;
+        //    }
+        //    else if (simulatedKeyPress.Key == ConsoleKey.Enter)
+        //    {
+        //        for (int row = 5; row >= 0; row--)
+        //        {
+        //            if (board[row, currentColumn] != "X" && board[row, currentColumn] != "O")
+        //            {
+        //                board[row, currentColumn] = playerSymbol;
+        //                int result = checkWin(playerSymbol);
+
+        //                if (result == 2)
+        //                {
+        //                    Console.Clear();
+        //                    printBoard();
+        //                    Console.WriteLine(playerSymbol + " wins!");
+        //                    break;
+        //                }
+        //                else if (result == 1)
+        //                {
+        //                    Console.Clear();
+        //                    printBoard();
+        //                    Console.WriteLine("Draw!");
+        //                    break;
+        //                }
+        //                else
+        //                {
+        //                    playerSymbol = (playerSymbol == "O") ? "X" : "O";
+        //                    break;
+        //                }
+        //            }
+        //            else if (board[0, currentColumn] == "X" || board[0, currentColumn] == "O")
+        //            {
+        //                Console.ForegroundColor = ConsoleColor.Red;
+        //                Console.WriteLine("This column is already full so please choose another one!");
+        //                Console.ResetColor();
+        //                Task.Delay(2000).Wait();
+        //            }
+        //        }
+        //        Console.WriteLine("Do you want to continue playing ConnectFour");
+        //        Console.WriteLine("1. Yes");
+        //        Console.WriteLine("2. No");
+        //        string strChoiceContinute = Console.ReadLine();
+        //        if (strChoiceContinute.Equals("2"))
+        //        {
+        //            resetAll();
+        //            continueGame = false;
+        //        }
+        //        else
+        //        {
+        //            resetAll();
+        //            Console.Clear();
+        //        }
+        //    }
+        //}
     }
 }
