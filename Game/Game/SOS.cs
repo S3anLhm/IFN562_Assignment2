@@ -127,7 +127,7 @@ namespace Assignment2
                         else
                         {
                             Console.WriteLine("Please enter if you want to place the symbol 'S' or 'O' on the grid");
-                            ch = Convert.ToChar(Console.ReadLine());
+                            ch = Convert.ToChar(Console.ReadLine().ToUpper());
 
                             while (true)
                             {
