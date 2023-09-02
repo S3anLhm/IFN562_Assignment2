@@ -12,7 +12,7 @@ namespace Assignment2
 
         protected override void displayGame()
         {
-            char[] gridNum = { '0','1', '2', '3', '4', '5', '6', '7', '8', '9' };
+            char[] gridNum = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
             bool[] combinationChecked = { false, false, false, false, false, false, false, false };
             bool playerScored = false;
             int player = 1;
@@ -20,52 +20,131 @@ namespace Assignment2
             int p2Score = 0;
             char ch;
             int choice;
+            bool flag = true;
+            int playerChoice;
+            Player player1 = null;
+            Player player2 = null;
+            int i = 0;
 
-            Console.WriteLine("Welcome to the game of SOS");
-            Console.WriteLine("\n");
+            Console.WriteLine("Welcome to the game of SOS.");
 
-            do
+            //Choosing between Human Player or Computer
+            while (true)
             {
-              
-                //Player's turn
-                if (player % 2 == 0)
+                Console.WriteLine("Please choose your opponent, 1.Human Player or 2.Computer");
+                string playerInput = Console.ReadLine();
+
+
+                bool successInput = int.TryParse(playerInput, out playerChoice);
+
+                if (successInput)
                 {
-                    Console.WriteLine("Player 2's turn");
+                    if (playerChoice == 1)
+                    {
+                        player1 = new HumanPlayer(1);
+                        player2 = new HumanPlayer(2);
+                        Console.WriteLine("You have chosen to play with human.");
+
+                    }
+                    else if (playerChoice == 2)
+                    {
+                        player1 = new HumanPlayer(1);
+                        player2 = new ComputerPlayer(2);
+                        Console.WriteLine("You have chosen to play with computer.");
+                    }
+
                 }
                 else
                 {
-                    Console.WriteLine("Player 1's turn");
+                    Console.WriteLine("Invalid option.Please only enter 1 or 2 to choose your opponent");
                 }
 
-                Console.WriteLine("\n");
+                break;
 
-                //Display Board
-                printBoard(gridNum);
+            }
 
-                
-                Console.WriteLine("Please enter the index of the grid where you want to place a symbol: ");
-                string input = Console.ReadLine();
+            Console.Clear();
+            do
+            {
 
-                bool success = int.TryParse(input, out choice);
+
+                if (player2 is HumanPlayer)
+                {
+
+
+
+                    //Player's turn
+                    if (player % 2 == 0)
+                    {
+                        Console.WriteLine("Player 2's turn");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Player 1's turn");
+                    }
+
+                    Console.WriteLine("\n");
+
+                    //Display Board
+                    printBoard(gridNum);
+
+                    Console.WriteLine("Please enter the index of the grid where you want to place a symbol: ");
+                    string input = Console.ReadLine();
+
+                    bool success = int.TryParse(input, out choice);
 
                     if (success && (gridNum[choice] != 'S' && gridNum[choice] != 'O'))
                     {
                         if (player % 2 == 0)
                         {
-                            //If player 1 enter s or o 
+                            //If player 2 enter s or o 
+                            /*  Console.WriteLine("Please enter if you want to place the symbol 'S' or 'O' on the grid");
+                              ch = Convert.ToChar(Console.ReadLine());
+                              gridNum[choice] = ch;
+                              Console.WriteLine("Player {0} has enter {1} at grid {2}.", player2._PlayerID, ch, choice);*/
+
                             Console.WriteLine("Please enter if you want to place the symbol 'S' or 'O' on the grid");
-                            ch = Convert.ToChar(Console.ReadLine());
-                            gridNum[choice] = ch;
-                            
+                            ch = Convert.ToChar(Console.ReadLine().ToUpper());
+
+                            while (true)
+                            {
+                                if (ch != 'S' && ch != 'O')
+                                {
+                                    Console.WriteLine("Invalid Symbol. Please enter only 'S' or 'O'.");
+                                    ch = Convert.ToChar(Console.ReadLine().ToUpper());
+                                }
+                                else
+                                {
+                                    Console.Clear();
+                                    gridNum[choice] = ch;
+                                    Console.WriteLine("Player {0} has enter {1} at grid {2}.", player2._PlayerID, ch, choice);
+                                    break;
+                                }
+
+                            }
 
                         }
                         else
                         {
                             Console.WriteLine("Please enter if you want to place the symbol 'S' or 'O' on the grid");
                             ch = Convert.ToChar(Console.ReadLine());
-                            gridNum[choice] = ch;
-                            
 
+                            while (true)
+                            {
+                                if (ch != 'S' && ch != 'O')
+                                {
+                                    Console.WriteLine("Invalid Symbol. Please enter only 'S' or 'O'.");
+                                    ch = Convert.ToChar(Console.ReadLine().ToUpper());
+                                }
+                                else
+                                {
+                                    Console.Clear();
+                                    gridNum[choice] = ch;
+                                    Console.WriteLine("Player {0} has enter {1} at grid {2}.", player1._PlayerID, ch, choice);
+                                    break;
+                                }
+
+                            }
                         }
                     }
                     else
@@ -75,56 +154,181 @@ namespace Assignment2
                         Console.WriteLine("Please wait 2 second board is loading again.....");
                         Thread.Sleep(2000);
                     }
-                
-                //Check Move (Validity)
-                //flag = CheckScore(gridNum,combinationChecked);
 
-                if (ScoreNContinue(gridNum, combinationChecked)) //If result == true
-                {
-                    if (player % 2 == 0) // if player 1 -> addscore
+
+                    if (ScoreNContinue(gridNum, combinationChecked)) //If result == true
                     {
-                        p1Score++;
-                        
-                        Console.WriteLine("Player 2 Scored, they get a second move.");
+                        if (player % 2 == 0) // if player 1 -> addscore
+                        {
+                            p2Score++;
+
+                            Console.WriteLine("Player 2 Scored, they get a second move.");
+                        }
+                        else
+                        {
+                            p1Score++;
+
+                            Console.WriteLine("Player 1 Scored, they get a second move.");
+                        }
                     }
                     else
                     {
-                        p2Score++;
-                        
-                        Console.WriteLine("Player 1 Scored, they get a second move.");
+
+                        Console.WriteLine("No Player Scored");
+                        player++;
                     }
+
+                    // choice = 2 or 1
+
+                    int x = getRemainingMoves(gridNum);
+
+
+
+
                 }
-                else
+
+                if (player2 is ComputerPlayer)
                 {
-                    
-                    Console.WriteLine("No Player Scored");
-                    player++;
+
+
+
+                    //Player's turn
+                    if (player % 2 == 0)
+                    {
+                        Console.WriteLine("Player 2,Computer's turn");
+                        Console.WriteLine("\n");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Player 1,Human Player's turn");
+                        Console.WriteLine("\n");
+                    }
+
+                    Console.WriteLine("\n");
+
+                    //Display Board
+                    printBoard(gridNum);
+
+                    if (player % 2 != 0)
+                    {
+                        Console.WriteLine("Please enter the index of the grid where you want to place a symbol: ");
+                        string input = Console.ReadLine();
+
+                        bool success = int.TryParse(input, out choice);
+
+                        if (success && (gridNum[choice] != 'S' && gridNum[choice] != 'O'))
+                        {
+                            Console.WriteLine("Please enter if you want to place the symbol 'S' or 'O' on the grid");
+                            ch = Convert.ToChar(Console.ReadLine().ToUpper());
+
+                            while (true)
+                            {
+                                if (ch != 'S' && ch != 'O')
+                                {
+                                    Console.WriteLine("Invalid Symbol. Please enter only 'S' or 'O'.");
+                                    ch = Convert.ToChar(Console.ReadLine().ToUpper());
+                                }
+                                else
+                                {
+                                    Console.Clear();
+                                    gridNum[choice] = ch;
+                                    Console.WriteLine("Player {0} has enter {1} at grid {2}.", player1._PlayerID, ch, choice);
+                                    break;
+                                }
+
+                            }
+
+                        }
+                        else
+                        {
+                            Console.WriteLine("Sorry the row {0} is already marked with {1}", choice, gridNum[choice]);
+                            Console.WriteLine("\n");
+                            Console.WriteLine("Please wait 2 second board is loading again.....");
+                            Thread.Sleep(2000);
+                        }
+
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        ComputerPlayer computerPlayer = (ComputerPlayer)player2;
+                        computerPlayer.randomMoveSOS(gridNum);
+
+                    }
+
+
+                    if (ScoreNContinue(gridNum, combinationChecked)) //If result == true
+                    {
+                        if (player % 2 == 0) // if player 1 -> addscore
+                        {
+                            p2Score++;
+
+                            Console.WriteLine("Computer player Scored, they get a second move.");
+                            Console.WriteLine("\n");
+                        }
+                        else
+                        {
+                            p1Score++;
+                            Console.WriteLine("Human player Scored, they get a second move.");
+                            Console.WriteLine("\n");
+                        }
+                    }
+                    else
+                    {
+
+                        Console.WriteLine("No Player Scored");
+                        Console.WriteLine("\n");
+                        player++;
+                    }
+
+                    // choice = 2 or 1
+
+                    int x = getRemainingMoves(gridNum);
+
+
+
+
                 }
 
-                // choice = 2 or 1
 
-                int x = getRemainingMoves(gridNum);
-                Console.WriteLine(x);
-
-
-                //Check RemainingMove and CheckWin
             } while (getRemainingMoves(gridNum) != 1);
 
             Console.Clear();
             printBoard(gridNum);
 
-            if (p1Score > p2Score)
+            if (playerChoice == 1)
             {
-                Console.WriteLine("Player 1 Wins with a score of {0}.", p1Score);
+                if (p1Score > p2Score)
+                {
+                    Console.WriteLine("Player 1 Wins with a score of {0}.", p1Score);
+                }
+                else if (p2Score > p1Score)
+                {
+                    Console.WriteLine("Player 2 Wins with a score of {0}.", p2Score);
+                }
+                else
+                {
+                    Console.WriteLine("Draw. P1 : {0}, P2 : {1}.", p1Score, p2Score);
+                }
             }
-            else if (p2Score > p1Score)
+
+            if (playerChoice == 2)
             {
-                Console.WriteLine("Player 2 Wins with a score of {0}.", p2Score);
+                if (p1Score > p2Score)
+                {
+                    Console.WriteLine("Player 1 Wins with a score of {0}.", p1Score);
+                }
+                else if (p2Score > p1Score)
+                {
+                    Console.WriteLine("Computer Wins with a score of {0}.", p2Score);
+                }
+                else
+                {
+                    Console.WriteLine("Draw. P1 : {0}, P2 : {1}.", p1Score, p2Score);
+                }
             }
-            else
-            {
-                Console.WriteLine("Draw. P1 : {0}, P2 : {1}.", p1Score, p2Score);
-            }
+
+
 
         }
 
@@ -198,6 +402,21 @@ namespace Assignment2
                 }
             }
 
+            // Diagonal combinations
+            if (result != 2)
+            {
+                if (!combinationsChecked[6] && gridNum[1] == 'S' && gridNum[5] == 'O' && gridNum[9] == 'S')
+                {
+                    result = 2;
+                    combinationsChecked[6] = true;
+                }
+                else if (!combinationsChecked[7] && gridNum[3] == 'S' && gridNum[5] == 'O' && gridNum[7] == 'S')
+                {
+                    result = 2;
+                    combinationsChecked[7] = true;
+                }
+            }
+
          
             
 
@@ -218,11 +437,11 @@ namespace Assignment2
 
        public static bool ScoreNContinue(char[] gridNum, bool[] combinationChecked)
         {
-            int result = CheckScore(gridNum, combinationChecked);   
+            int result = CheckScore(gridNum, combinationChecked);
 
-            if(result == 2)
+            if (result == 2)
             {
-                
+
                 return true;
             }
             else
