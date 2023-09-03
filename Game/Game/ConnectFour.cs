@@ -23,7 +23,7 @@ namespace Assignment2
                 {"-", "-", "-", "-", "-", "-", "-"},
                 {"-", "-", "-", "-", "-", "-", "-"},
         };
-        private void printBoard()
+        private void printBoard(string currentPlayer)
         {
             Console.WriteLine(currentPlayer + ", please make your move!");
             //print out rows and columns
@@ -45,7 +45,6 @@ namespace Assignment2
                 Console.WriteLine();
             }
         }
-
         private void chooseOpponent(out Player player1, out Player player2)
         {
             while (true)
@@ -121,11 +120,18 @@ namespace Assignment2
             assignSymbols(out player1Symbol, out player2Symbol);
             string currentPlayer = player1Symbol;
             bool gameInProgress = true;
+            bool menuShown = false;
             while (gameInProgress)
             {
                 Console.Clear();
-                printBoard();
-                if (currentPlayer == player1Symbol)
+                printBoard(currentPlayer);
+                if (!menuShown)
+                {
+                    menu();
+                    menuShown = true;
+                }
+
+                if (currentPlayer == player1Symbol || (currentPlayer == player2Symbol && player2 is HumanPlayer))
                 {
                     ConsoleKeyInfo KeyInfo = Console.ReadKey();
                     if (KeyInfo.Key == ConsoleKey.RightArrow)
@@ -152,119 +158,102 @@ namespace Assignment2
                         if (row >= 0)
                         {
                             board[row, currentColumn] = currentPlayer;
+                            int result = checkWin(currentPlayer);
+                            if (result == 2)
+                            {
+                                Console.Clear();
+                                printBoard(currentPlayer);
+                                Console.WriteLine(currentPlayer + " wins!");
+                                Task.Delay(1000).Wait();
+                                askForReplay(ref gameInProgress);
+                            }
+                            else if (result == 1)
+                            {
+                                Console.Clear();
+                                printBoard(currentPlayer);
+                                Console.WriteLine("Draw!");
+                                Task.Delay(1000).Wait();
+                                askForReplay(ref gameInProgress);
+                            }
+                            else
+                            {
+                                currentPlayer = (currentPlayer == player1Symbol) ? player2Symbol : player1Symbol;
+                                if (player2 is HumanPlayer)
+                                {
+                                    menuShown = false;
+                                }
+                            }
                         }
                         else
                         {
-                            currentPlayer = (currentPlayer == "O") ? "X" : "O";
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("This column is already filled");
+                            Console.ResetColor();
+                            Task.Delay(2000).Wait();
+                            continue; // Stay on the same player's turn if an invalid move is made
                         }
-                    }
-                    else
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("This already filled");
-                        Console.ResetColor();
-                        Task.Delay(2000).Wait();
                     }
                 }
-                else if (currentPlayer == player2Symbol)
+                else if (currentPlayer == player2Symbol && player2 is ComputerPlayer)
                 {
-                    if (player2 is HumanPlayer)
+                    ComputerPlayer computerPlayer = (ComputerPlayer)player2;
+                    ConsoleKeyInfo simulatedKeyPress = computerPlayer.randomMoveConnectFour();
+                    if (simulatedKeyPress.Key == ConsoleKey.RightArrow)
                     {
-                        ConsoleKeyInfo KeyInfo = Console.ReadKey();
-                        if (KeyInfo.Key == ConsoleKey.RightArrow)
+                        currentColumn++;
+                        currentColumn = (currentColumn >= 7) ? 0 : currentColumn;
+                    }
+                    else if (simulatedKeyPress.Key == ConsoleKey.LeftArrow)
+                    {
+                        currentColumn--;
+                        currentColumn = (currentColumn < 0) ? 6 : currentColumn;
+                    }
+                    else if (simulatedKeyPress.Key == ConsoleKey.Enter)
+                    {
+                        int row;
+                        // Find the first available row bottom to top
+                        for (row = 5; row >= 0; row--)
                         {
-                            currentColumn++;
-                            currentColumn = (currentColumn >= 7) ? 0 : currentColumn;
-                        }
-                        else if (KeyInfo.Key == ConsoleKey.LeftArrow)
-                        {
-                            currentColumn--;
-                            currentColumn = (currentColumn < 0) ? 6 : currentColumn;
-                        }
-                        else if (KeyInfo.Key == ConsoleKey.Enter)
-                        {
-                            int row;
-                            // Find the first available row bottom to top
-                            for (row = 5; row >= 0; row--)
+                            if (board[row, currentColumn] != "X" && board[row, currentColumn] != "O")
                             {
-                                if (board[row, currentColumn] != "X" && board[row, currentColumn] != "O")
-                                {
-                                    break;
-                                }
+                                break;
                             }
-                            if (row >= 0)
+                        }
+                        if (row >= 0)
+                        {
+                            board[row, currentColumn] = currentPlayer;
+                            int result = checkWin(currentPlayer);
+                            if (result == 2)
                             {
-                                board[row, currentColumn] = currentPlayer;
+                                Console.Clear();
+                                printBoard(currentPlayer);
+                                Console.WriteLine(currentPlayer + " wins!");
+                                Task.Delay(1000).Wait();
+                                askForReplay(ref gameInProgress);
+                            }
+                            else if (result == 1)
+                            {
+                                Console.Clear();
+                                printBoard(currentPlayer);
+                                Console.WriteLine("Draw!");
+                                Task.Delay(1000).Wait();
+                                askForReplay(ref gameInProgress);
                             }
                             else
                             {
-                                Console.ForegroundColor = ConsoleColor.Red;
-                                Console.WriteLine("This already filled");
-                                Console.ResetColor();
-                                Task.Delay(2000).Wait();
+                                currentPlayer = (currentPlayer == player1Symbol) ? player2Symbol : player1Symbol;
+                                menuShown = false;
                             }
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("This column is already filled");
+                            Console.ResetColor();
+                            Task.Delay(2000).Wait();
+                            continue; // Stay on the same player's turn if an invalid move is made
                         }
                     }
-                    else if (player2 is ComputerPlayer)
-                    {
-                        ComputerPlayer computerPlayer = (ComputerPlayer)player2;
-                        ConsoleKeyInfo simulatedKeyPress = computerPlayer.SimulateRandomKeyPress();
-                        if (simulatedKeyPress.Key == ConsoleKey.RightArrow)
-                        {
-                            currentColumn++;
-                            currentColumn = (currentColumn >= 7) ? 0 : currentColumn;
-                        }
-                        else if (simulatedKeyPress.Key == ConsoleKey.LeftArrow)
-                        {
-                            currentColumn--;
-                            currentColumn = (currentColumn < 0) ? 6 : currentColumn;
-                        }
-                        else if (simulatedKeyPress.Key == ConsoleKey.Enter)
-                        {
-                            int row;
-                            // Find the first available row bottom to top
-                            for (row = 5; row >= 0; row--)
-                            {
-                                if (board[row, currentColumn] != "X" && board[row, currentColumn] != "O")
-                                {
-                                    break;
-                                }
-                            }
-                            if (row >= 0)
-                            {
-                                board[row, currentColumn] = currentPlayer;
-                            }
-                            else
-                            {
-                                Console.ForegroundColor = ConsoleColor.Red;
-                                Console.WriteLine("This already filled");
-                                Console.ResetColor();
-                                Task.Delay(2000).Wait();
-                            }
-                        }
-                    }
-                }
-                //Replay option
-                int result = checkWin(currentPlayer);
-                if (result == 2)
-                {
-                    Console.Clear();
-                    printBoard();
-                    Console.WriteLine(currentPlayer + " wins!");
-                    Task.Delay(1000).Wait();
-                    askForReplay(ref gameInProgress);
-                }
-                else if (result == 1)
-                {
-                    Console.Clear();
-                    printBoard();
-                    Console.WriteLine("Draw!");
-                    Task.Delay(1000).Wait();
-                    askForReplay(ref gameInProgress);
-                }
-                else
-                {
-                    currentPlayer = (currentPlayer == player1Symbol) ? player2Symbol : player1Symbol;
                 }
             }
         }
@@ -289,7 +278,7 @@ namespace Assignment2
             }
         }
         //win = 2; draw = 1; nothing = 0
-        protected override int checkWin(string symbol)
+        private int checkWin(string symbol)
         {
             int result = 0;
             //horizontal
@@ -344,7 +333,7 @@ namespace Assignment2
             }
             return result;
         }
-        protected override int getRemainingMoves()
+        private int getRemainingMoves()
         {
             int count = 0;
             for (int i = 0; i < 6; i++)
@@ -358,7 +347,7 @@ namespace Assignment2
                 }
             return count;
         }
-        protected override void resetAll()
+        private void resetAll()
         {
             currentRow = 0;
             currentColumn = 0;
@@ -371,6 +360,33 @@ namespace Assignment2
                 {"-", "-", "-", "-", "-", "-", "-"},
                 {"-", "-", "-", "-", "-", "-", "-"},
             };
+        }
+        public static void menu()
+        {
+            while (true)
+            {
+                int choice;
+                Console.WriteLine("Please enter an option: 1) Display Help 2) Continue Game");
+                string input = Console.ReadLine();
+                bool success = int.TryParse(input, out choice);
+                if (success && choice == 1)
+                {
+                    HelpSystem i = new HelpSystem(2);
+                    i.displayConnectFourBoard();
+
+                }
+                else if (success && choice == 2)
+                {
+
+                    Console.WriteLine("Continuing game..");
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Please enter the correct option.");
+                }
+
+            }
         }
         //public void handlePlayerMove(ref string playerSymbol, ref bool continueGame, ref int currentColumn)
         //{

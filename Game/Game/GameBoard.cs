@@ -44,7 +44,10 @@ namespace Assignment2
                 {
                     game = new SOS(gameID);
                 }
-                else
+                else if (success && (gameID == 2))
+                {
+                    game = new ConnectFour(gameID);
+                }
                 {
                     Console.WriteLine("Please enter the correct option");
                 }

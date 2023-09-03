@@ -1,4 +1,4 @@
-using Assignment2;
+﻿using Assignment2;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -11,7 +11,6 @@ namespace Assignment2
 {
     public class HumanPlayer : Player
     {
-        //storing an instance of the game
         public int _PlayerID { get; private set; }
         public HumanPlayer(int _playerID) : base(_playerID)
         {
