@@ -12,18 +12,19 @@ namespace Assignment2
 
         protected override void displayGame()
         {
-            char[] gridNum = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+            char[] gridNum = {'0','1', '2', '3', '4', '5', '6', '7', '8', '9' };
             bool[] combinationChecked = { false, false, false, false, false, false, false, false };
             bool playerScored = false;
             int player = 1;
             int p1Score = 0;
             int p2Score = 0;
             char ch;
-            int choice;
+            int choice = 0;
             bool flag = true;
             int playerChoice;
             Player player1 = null;
             Player player2 = null;
+            int choice1;
             int i = 0;
 
             Console.WriteLine("Welcome to the game of SOS.");
@@ -66,12 +67,12 @@ namespace Assignment2
             Console.Clear();
             do
             {
-        
+
 
                 if (player2 is HumanPlayer)
                 {
-                   
-        
+
+
                     //Player's turn
                     if (player % 2 == 0)
                     {
@@ -89,74 +90,88 @@ namespace Assignment2
                     Console.WriteLine("\n");
 
                     //Display Board
-                    printBoard(gridNum);
+                    //printBoard(gridNum);
 
-                    Console.WriteLine("Please enter the index of the grid where you want to place a symbol: ");
-                    string input = Console.ReadLine();
-
-                    bool success = int.TryParse(input, out choice);
-
-                    if (success && (gridNum[choice] != 'S' && gridNum[choice] != 'O'))
+                    while (flag)
                     {
-                        if (player % 2 == 0)
+                        printBoard(gridNum);
+                        Console.WriteLine("Please enter the index of the grid where you want to place a symbol: ");
+                        string input = Console.ReadLine();
+
+                        bool success = int.TryParse(input, out choice1);
+                        if (success && (gridNum[choice1] != 'S' && gridNum[choice1] != 'O'))
                         {
-                            //If player 2 enter s or o 
-                            /*  Console.WriteLine("Please enter if you want to place the symbol 'S' or 'O' on the grid");
-                              ch = Convert.ToChar(Console.ReadLine());
-                              gridNum[choice] = ch;
-                              Console.WriteLine("Player {0} has enter {1} at grid {2}.", player2._PlayerID, ch, choice);*/
-
-                            Console.WriteLine("Please enter if you want to place the symbol 'S' or 'O' on the grid");
-                            ch = Convert.ToChar(Console.ReadLine().ToUpper());
-
-                            while (true)
-                            {
-                                if (ch != 'S' && ch != 'O')
-                                {
-                                    Console.WriteLine("Invalid Symbol. Please enter only 'S' or 'O'.");
-                                    ch = Convert.ToChar(Console.ReadLine().ToUpper());
-                                }
-                                else
-                                {
-                                    Console.Clear();
-                                    gridNum[choice] = ch;
-                                    Console.WriteLine("Player {0} has enter {1} at grid {2}.", player2._PlayerID, ch, choice);
-                                    break;
-                                }
-
-                            }
-
+                            choice = choice1;
+                            break;
                         }
                         else
                         {
-                            Console.WriteLine("Please enter if you want to place the symbol 'S' or 'O' on the grid");
-                            ch = Convert.ToChar(Console.ReadLine());
-
-                            while (true)
-                            {
-                                if (ch != 'S' && ch != 'O')
-                                {
-                                    Console.WriteLine("Invalid Symbol. Please enter only 'S' or 'O'.");
-                                    ch = Convert.ToChar(Console.ReadLine().ToUpper());
-                                }
-                                else
-                                {
-                                    Console.Clear();
-                                    gridNum[choice] = ch;
-                                    Console.WriteLine("Player {0} has enter {1} at grid {2}.", player1._PlayerID, ch, choice);
-                                    break;
-                                }
-
-                            }
+                            Console.WriteLine("Sorry the row {0} is already marked with {1}", choice, gridNum[choice]);
+                            Console.WriteLine("\n");
+                            Console.WriteLine("Please wait 2 second board is loading again.....");
+                            Thread.Sleep(2000);
                         }
+
+                    }
+
+                    if (player % 2 == 0)
+                    {
+                        //If player 2 enter s or o 
+                        /*  Console.WriteLine("Please enter if you want to place the symbol 'S' or 'O' on the grid");
+                          ch = Convert.ToChar(Console.ReadLine());
+                          gridNum[choice] = ch;
+                          Console.WriteLine("Player {0} has enter {1} at grid {2}.", player2._PlayerID, ch, choice);*/
+
+                        Console.WriteLine("Please enter if you want to place the symbol 'S' or 'O' on the grid");
+                        ch = Convert.ToChar(Console.ReadLine().ToUpper());
+
+                        while (true)
+                        {
+                            if (ch != 'S' && ch != 'O')
+                            {
+                                Console.WriteLine("Invalid Symbol. Please enter only 'S' or 'O'.");
+                                ch = Convert.ToChar(Console.ReadLine().ToUpper());
+                            }
+                            else
+                            {
+                                Console.Clear();
+                                gridNum[choice] = ch;
+                                Console.WriteLine("Player {0} has enter {1} at grid {2}.", player2._PlayerID, ch, choice);
+                                break;
+                            }
+
+                        }
+
+
+
                     }
                     else
                     {
-                        Console.WriteLine("Sorry the row {0} is already marked with {1}", choice, gridNum[choice]);
-                        Console.WriteLine("\n");
-                        Console.WriteLine("Please wait 2 second board is loading again.....");
-                        Thread.Sleep(2000);
+                        Console.WriteLine("Please enter if you want to place the symbol 'S' or 'O' on the grid");
+                        ch = Convert.ToChar(Console.ReadLine().ToUpper());
+
+                        while (true)
+                        {
+                            if (ch != 'S' && ch != 'O')
+                            {
+                                Console.WriteLine("Invalid Symbol. Please enter only 'S' or 'O'.");
+                                ch = Convert.ToChar(Console.ReadLine().ToUpper());
+                            }
+                            else
+                            {
+                                Console.Clear();
+                                gridNum[choice] = ch;
+                                Console.WriteLine("Player {0} has enter {1} at grid {2}.", player1._PlayerID, ch, choice);
+                                break;
+                            }
+
+                        }
+
+
                     }
+                
+            
+                       
 
 
                     if (ScoreNContinue(gridNum, combinationChecked)) //If result == true
@@ -185,11 +200,8 @@ namespace Assignment2
                     // choice = 2 or 1
 
                     int x = getRemainingMoves(gridNum);
-
-
-
-
                 }
+
 
                 if (player2 is ComputerPlayer)
                 {
@@ -212,24 +224,38 @@ namespace Assignment2
                     Console.WriteLine("\n");
 
                     //Display Board
-                    printBoard(gridNum);
+                    //printBoard(gridNum);
 
                     if (player % 2 != 0)
                     {
-                        Console.WriteLine("Please enter the index of the grid where you want to place a symbol: ");
-                        string input = Console.ReadLine();
-
-                        bool success = int.TryParse(input, out choice);
-
-
-
-                        if (success && (gridNum[choice] != 'S' && gridNum[choice] != 'O'))
+                        while (flag)
                         {
-                            Console.WriteLine("Please enter if you want to place the symbol 'S' or 'O' on the grid");
-                            ch = Convert.ToChar(Console.ReadLine().ToUpper());
+                            printBoard(gridNum);
+                            Console.WriteLine("Please enter the index of the grid where you want to place a symbol: ");
+                            string input = Console.ReadLine();
+
+                            bool success = int.TryParse(input, out choice1);
+                            if (success && (gridNum[choice1] != 'S' && gridNum[choice1] != 'O'))
+                            {
+                                choice = choice1;
+                                break; // Break the loop if the choice is valid
+                            }
+                            else
+                            {
+                                Console.WriteLine("Sorry the row {0} is already marked with {1}", choice1, gridNum[choice1]);
+                                Console.WriteLine("\n");
+                                Console.WriteLine("Please wait 2 seconds; the board is loading again.....");
+                                Thread.Sleep(2000);
+                            }
+                        }
+
+                
 
                             while (true)
                             {
+
+                                Console.WriteLine("Please enter if you want to place the symbol 'S' or 'O' on the grid");
+                                ch = Convert.ToChar(Console.ReadLine().ToUpper());
                                 if (ch != 'S' && ch != 'O')
                                 {
                                     Console.WriteLine("Invalid Symbol. Please enter only 'S' or 'O'.");
@@ -239,30 +265,24 @@ namespace Assignment2
                                 {
                                     Console.Clear();
                                     gridNum[choice] = ch;
-                                    Console.WriteLine("Player {0} has enter {1} at grid {2}.", player1._PlayerID, ch, choice);
+                                    Console.WriteLine("Player {0} has entered {1} at grid {2}.", player1._PlayerID, ch, choice);
                                     break;
                                 }
-
                             }
-
-                        }
-
-                        else
-                        {
-                            Console.WriteLine("Sorry the row {0} is already marked with {1}", choice, gridNum[choice]);
-                            Console.WriteLine("\n");
-                            Console.WriteLine("Please wait 2 second board is loading again.....");
-                            Thread.Sleep(2000);
-                        }
-
+                        
                     }
                     else
                     {
                         Console.Clear();
                         ComputerPlayer computerPlayer = (ComputerPlayer)player2;
                         computerPlayer.randomMoveSOS(gridNum);
-
                     }
+
+
+
+
+
+
 
 
                     if (ScoreNContinue(gridNum, combinationChecked)) //If result == true
@@ -295,8 +315,6 @@ namespace Assignment2
                     // choice = 2 or 1
 
                     int x = getRemainingMoves(gridNum);
-
-
 
 
                 }
@@ -435,7 +453,7 @@ namespace Assignment2
         }
         public int getRemainingMoves(char[] gridNum)
         {
-            if (gridNum[1] != '1' && gridNum[2] != '2' && gridNum[3] != '3' && gridNum[4] != '4' && gridNum[5] != '5' && gridNum[6] != '6' && gridNum[7] != '7' && gridNum[8] != '8' && gridNum[9] != '9')
+            if (gridNum[1] != '1' && gridNum[2] != '2' && gridNum[3] != '3' && gridNum[4] != '4' && gridNum[5] != '5' && gridNum[6] != '7' && gridNum[7] != '7' && gridNum[8] != '8' && gridNum[9] != '9')
             {
                 //No More Moves
                 return 1;
