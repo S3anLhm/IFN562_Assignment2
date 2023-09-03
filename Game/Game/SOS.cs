@@ -66,21 +66,24 @@ namespace Assignment2
             Console.Clear();
             do
             {
-
+        
 
                 if (player2 is HumanPlayer)
                 {
-
-
-
+                   
+        
                     //Player's turn
                     if (player % 2 == 0)
                     {
                         Console.WriteLine("Player 2's turn");
+                        menu();
+
                     }
                     else
                     {
                         Console.WriteLine("Player 1's turn");
+                        menu();
+
                     }
 
                     Console.WriteLine("\n");
@@ -161,13 +164,13 @@ namespace Assignment2
                         if (player % 2 == 0) // if player 1 -> addscore
                         {
                             p2Score++;
-
+                            printBoard(gridNum);
                             Console.WriteLine("Player 2 Scored, they get a second move.");
                         }
                         else
                         {
                             p1Score++;
-
+                            printBoard(gridNum);
                             Console.WriteLine("Player 1 Scored, they get a second move.");
                         }
                     }
@@ -175,6 +178,7 @@ namespace Assignment2
                     {
 
                         Console.WriteLine("No Player Scored");
+                        printBoard(gridNum);
                         player++;
                     }
 
@@ -201,6 +205,7 @@ namespace Assignment2
                     else
                     {
                         Console.WriteLine("Player 1,Human Player's turn");
+                        menu();
                         Console.WriteLine("\n");
                     }
 
@@ -215,6 +220,8 @@ namespace Assignment2
                         string input = Console.ReadLine();
 
                         bool success = int.TryParse(input, out choice);
+
+
 
                         if (success && (gridNum[choice] != 'S' && gridNum[choice] != 'O'))
                         {
@@ -239,6 +246,7 @@ namespace Assignment2
                             }
 
                         }
+
                         else
                         {
                             Console.WriteLine("Sorry the row {0} is already marked with {1}", choice, gridNum[choice]);
@@ -264,12 +272,14 @@ namespace Assignment2
                             p2Score++;
 
                             Console.WriteLine("Computer player Scored, they get a second move.");
+                            printBoard(gridNum);
                             Console.WriteLine("\n");
                         }
                         else
                         {
                             p1Score++;
                             Console.WriteLine("Human player Scored, they get a second move.");
+                            printBoard(gridNum);
                             Console.WriteLine("\n");
                         }
                     }
@@ -278,6 +288,7 @@ namespace Assignment2
 
                         Console.WriteLine("No Player Scored");
                         Console.WriteLine("\n");
+                        printBoard(gridNum);
                         player++;
                     }
 
@@ -450,7 +461,35 @@ namespace Assignment2
             }
         }
 
-     
+        public static void menu()
+        {
+            while (true)
+            {
+                int choice;
+                Console.WriteLine("Please enter an option: 1) Display Help 2) Continue Game");
+                string input = Console.ReadLine();
+                bool success = int.TryParse(input, out choice);
+                if (success && choice == 1)
+                {
+                    HelpSystem i = new HelpSystem(1);
+                    i.displaySOSBoard();
 
-    }
+                }
+                else if (success && choice == 2)
+                {
+                  
+                    Console.WriteLine("Continuing game..");
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Please enter the correct option.");
+                }
+
+            }
+        }
+
+
+
+            }
 }
