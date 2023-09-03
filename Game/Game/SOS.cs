@@ -20,7 +20,6 @@ namespace Assignment2
             int p2Score = 0;
             char ch;
             int choice;
-            bool flag = true;
             int playerChoice;
             Player player1 = null;
             Player player2 = null;
@@ -66,12 +65,12 @@ namespace Assignment2
             Console.Clear();
             do
             {
-        
+
 
                 if (player2 is HumanPlayer)
                 {
-                   
-        
+
+
                     //Player's turn
                     if (player % 2 == 0)
                     {
@@ -428,12 +427,12 @@ namespace Assignment2
                 }
             }
 
-         
-            
+
+
 
             return result;
         }
-        protected override int getRemainingMoves(char[] gridNum)
+        private int getRemainingMoves(char[] gridNum)
         {
             if (gridNum[1] != '1' && gridNum[2] != '2' && gridNum[3] != '3' && gridNum[4] != '4' && gridNum[5] != '5' && gridNum[6] != '6' && gridNum[7] != '7' && gridNum[8] != '8' && gridNum[9] != '9')
             {
@@ -446,7 +445,7 @@ namespace Assignment2
             }
         }
 
-       public static bool ScoreNContinue(char[] gridNum, bool[] combinationChecked)
+        public static bool ScoreNContinue(char[] gridNum, bool[] combinationChecked)
         {
             int result = CheckScore(gridNum, combinationChecked);
 
@@ -477,7 +476,7 @@ namespace Assignment2
                 }
                 else if (success && choice == 2)
                 {
-                  
+
                     Console.WriteLine("Continuing game..");
                     break;
                 }
@@ -491,5 +490,5 @@ namespace Assignment2
 
 
 
-            }
+    }
 }
