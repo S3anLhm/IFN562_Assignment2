@@ -357,7 +357,7 @@ namespace Assignment2
         }
 
 
-        public static int CheckScore(char[] gridNum, bool[] combinationsChecked)
+        public int CheckScore(char[] gridNum, bool[] combinationsChecked)
         {
             int result = 0;
 
@@ -433,7 +433,7 @@ namespace Assignment2
 
             return result;
         }
-        protected override int getRemainingMoves(char[] gridNum)
+        public int getRemainingMoves(char[] gridNum)
         {
             if (gridNum[1] != '1' && gridNum[2] != '2' && gridNum[3] != '3' && gridNum[4] != '4' && gridNum[5] != '5' && gridNum[6] != '6' && gridNum[7] != '7' && gridNum[8] != '8' && gridNum[9] != '9')
             {
@@ -446,7 +446,7 @@ namespace Assignment2
             }
         }
 
-       public static bool ScoreNContinue(char[] gridNum, bool[] combinationChecked)
+       public bool ScoreNContinue(char[] gridNum, bool[] combinationChecked)
         {
             int result = CheckScore(gridNum, combinationChecked);
 
