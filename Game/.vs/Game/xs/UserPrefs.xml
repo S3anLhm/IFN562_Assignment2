@@ -1,36 +1,31 @@
 ﻿<Properties StartupConfiguration="{18F5F242-2B56-42FB-A347-1F29E72A82D9}|Default">
-  <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
-  </MonoDevelop.Ide.DebuggingService.Breakpoints>
-<<<<<<< HEAD
-  <MonoDevelop.Ide.Workbench ActiveDocument="Game/Test.cs">
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Game/GameBoard.cs">
     <Files>
-      <File FileName="Game/Program.cs" Line="7" Column="8" IsPinned="True" />
-      <File FileName="Game/GameBoard.cs" />
-      <File FileName="Game/SOS.cs" Line="1" Column="1" />
-      <File FileName="Game/Test.cs" Line="198" Column="15" />
-=======
-  <MonoDevelop.Ide.Workbench ActiveDocument="Game/SOS.cs">
-    <Files>
-      <File FileName="Game/Program.cs" Line="12" Column="6" IsPinned="True" />
-      <File FileName="Game/GameBoard.cs" Line="4" Column="19" />
-      <File FileName="Game/SOS.cs" Line="1" Column="1" />
->>>>>>> SOSBranch
+      <File FileName="Game/Program.cs" Line="10" Column="25" IsPinned="True" />
+      <File FileName="Game/ConnectFour.cs" Line="250" Column="72" IsPinned="True" />
+      <File FileName="Game/Player.cs" Line="1" Column="1" />
+      <File FileName="Game/SOS.cs" Line="20" Column="29" />
+      <File FileName="Game/Game.cs" Line="22" Column="45" />
+      <File FileName="Game/HelpSystem.cs" Line="62" Column="32" />
+      <File FileName="Game/GameBoard.cs" Line="53" Column="18" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="Game">
-            <Node name="Game" expanded="True">
-              <Node name="SOS.cs" selected="True" />
+            <Node name="Game">
+              <Node name="GameBoard.cs" selected="True" />
             </Node>
           </Node>
         </State>
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MultiItemStartupConfigurations />
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.ItemProperties.Game PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
 </Properties>
