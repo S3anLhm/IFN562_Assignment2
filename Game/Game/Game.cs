@@ -19,6 +19,7 @@ namespace Assignment2
         {
             displayGame();
         }
+
         protected abstract void displayGame();
     }
 }

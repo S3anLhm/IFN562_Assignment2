@@ -21,7 +21,7 @@ namespace Assignment2
             //(Unicode character that corresponds to the pressed key, ConsoleKey enumeration, bool Shift, bool Alt, bool Ctrl)
             return new ConsoleKeyInfo('\0', arrowKeys[randomIndex], false, false, false);
         }
-        public void randomMoveSOS(char[] gridNum)
+        public void randomMoveSOS(SOSGameState gameState)
         {
             Random random = new Random();
             char randomChar = random.Next(2) == 0 ? 'S' : 'O';
@@ -30,9 +30,9 @@ namespace Assignment2
             while (true)
             {
                 move = random.Next(1, 10);
-                if ((gridNum[move] != 'S' && gridNum[move] != 'O'))
+                if ((gameState.gridNum[move] != 'S' && gameState.gridNum[move] != 'O'))
                 {
-                    gridNum[move] = randomChar;
+                    gameState.gridNum[move] = randomChar;
                     break;
                 }
             }

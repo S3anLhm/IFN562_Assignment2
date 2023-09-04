@@ -39,6 +39,7 @@ namespace Assignment2
                 bool success = int.TryParse(gameChoice, out gameID);
 
                 Game game = null;
+                GameState gameState = null;
 
                 if (success && (gameID == 1))
                 {
@@ -47,6 +48,7 @@ namespace Assignment2
                 else if (success && (gameID == 2))
                 {
                     game = new ConnectFour(gameID);
+                    gameState = new ConnectFourGameState();
                 }
                 {
                     Console.WriteLine("Please enter the correct option");

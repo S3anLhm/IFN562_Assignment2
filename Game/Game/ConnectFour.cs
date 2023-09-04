@@ -5,41 +5,31 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Assignment2
 {
     public class ConnectFour : Game
     {
         public ConnectFour(int _gameID) : base(_gameID) { }
-        private int currentRow = 0;
-        private int currentColumn = 0;
-        private string currentPlayer = "O";
-        private string[,] board = new string[6, 7]
+        ConnectFourGameState gameState;
+        private static void printBoard(ConnectFourGameState gameState)
         {
-                {"-", "-", "-", "-", "-", "-", "-"},
-                {"-", "-", "-", "-", "-", "-", "-"},
-                {"-", "-", "-", "-", "-", "-", "-"},
-                {"-", "-", "-", "-", "-", "-", "-"},
-                {"-", "-", "-", "-", "-", "-", "-"},
-                {"-", "-", "-", "-", "-", "-", "-"},
-        };
-        private void printBoard(string currentPlayer)
-        {
-            Console.WriteLine(currentPlayer + ", please make your move!");
+            Console.WriteLine(gameState.currentPlayer + ", please make your move!");
             //print out rows and columns
             for (int i = 0; i < 6; i++)
             {
                 for (int j = 0; j < 7; j++)
                 {
-                    if (i == currentRow && j == currentColumn)
+                    if (i == gameState.currentRow && j == gameState.currentColumn)
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write(board[i, j] + " ");
+                        Console.Write(gameState.board[i, j] + " ");
                         Console.ResetColor();
                     }
                     else
                     {
-                        Console.Write(board[i, j] + " ");
+                        Console.Write(gameState.board[i, j] + " ");
                     }
                 }
                 Console.WriteLine();
@@ -76,7 +66,6 @@ namespace Assignment2
                     player2 = null;
                 }
             }
-            resetAll();
         }
         private void assignSymbols(out string player1Symbol, out string player2Symbol)
         {
@@ -118,31 +107,33 @@ namespace Assignment2
             string player2Symbol;
             chooseOpponent(out player1, out player2);
             assignSymbols(out player1Symbol, out player2Symbol);
-            string currentPlayer = player1Symbol;
+            gameState = new ConnectFourGameState();
+            ConnectFourGameSaveLoad saveLoadHandler = new ConnectFourGameSaveLoad(gameState);
+            gameState.currentPlayer = player1Symbol;
             bool gameInProgress = true;
             bool menuShown = false;
             while (gameInProgress)
             {
                 Console.Clear();
-                printBoard(currentPlayer);
+                printBoard(gameState);
                 if (!menuShown)
                 {
-                    menu();
+                    Menu(ref gameState, ref saveLoadHandler);
                     menuShown = true;
                 }
 
-                if (currentPlayer == player1Symbol || (currentPlayer == player2Symbol && player2 is HumanPlayer))
+                if (gameState.currentPlayer == player1Symbol || (gameState.currentPlayer == player2Symbol && player2 is HumanPlayer))
                 {
                     ConsoleKeyInfo KeyInfo = Console.ReadKey();
                     if (KeyInfo.Key == ConsoleKey.RightArrow)
                     {
-                        currentColumn++;
-                        currentColumn = (currentColumn >= 7) ? 0 : currentColumn;
+                        gameState.currentColumn++;
+                        gameState.currentColumn = (gameState.currentColumn >= 7) ? 0 : gameState.currentColumn;
                     }
                     else if (KeyInfo.Key == ConsoleKey.LeftArrow)
                     {
-                        currentColumn--;
-                        currentColumn = (currentColumn < 0) ? 6 : currentColumn;
+                        gameState.currentColumn--;
+                        gameState.currentColumn = (gameState.currentColumn < 0) ? 6 : gameState.currentColumn;
                     }
                     else if (KeyInfo.Key == ConsoleKey.Enter)
                     {
@@ -150,34 +141,34 @@ namespace Assignment2
                         // Find the first available row bottom to top
                         for (row = 5; row >= 0; row--)
                         {
-                            if (board[row, currentColumn] != "X" && board[row, currentColumn] != "O")
+                            if (gameState.board[row, gameState.currentColumn] != "X" && gameState.board[row, gameState.currentColumn] != "O")
                             {
                                 break;
                             }
                         }
                         if (row >= 0)
                         {
-                            board[row, currentColumn] = currentPlayer;
-                            int result = checkWin(currentPlayer);
+                            gameState.board[row, gameState.currentColumn] = gameState.currentPlayer;
+                            int result = checkWin(gameState.currentPlayer);
                             if (result == 2)
                             {
                                 Console.Clear();
-                                printBoard(currentPlayer);
-                                Console.WriteLine(currentPlayer + " wins!");
+                                printBoard(gameState);
+                                Console.WriteLine(gameState.currentPlayer + " wins!");
                                 Task.Delay(1000).Wait();
                                 askForReplay(ref gameInProgress);
                             }
                             else if (result == 1)
                             {
                                 Console.Clear();
-                                printBoard(currentPlayer);
+                                printBoard(gameState);
                                 Console.WriteLine("Draw!");
                                 Task.Delay(1000).Wait();
                                 askForReplay(ref gameInProgress);
                             }
                             else
                             {
-                                currentPlayer = (currentPlayer == player1Symbol) ? player2Symbol : player1Symbol;
+                                gameState.currentPlayer = (gameState.currentPlayer == player1Symbol) ? player2Symbol : player1Symbol;
                                 if (player2 is HumanPlayer)
                                 {
                                     menuShown = false;
@@ -194,19 +185,19 @@ namespace Assignment2
                         }
                     }
                 }
-                else if (currentPlayer == player2Symbol && player2 is ComputerPlayer)
+                else if (gameState.currentPlayer == player2Symbol && player2 is ComputerPlayer)
                 {
                     ComputerPlayer computerPlayer = (ComputerPlayer)player2;
                     ConsoleKeyInfo simulatedKeyPress = computerPlayer.randomMoveConnectFour();
                     if (simulatedKeyPress.Key == ConsoleKey.RightArrow)
                     {
-                        currentColumn++;
-                        currentColumn = (currentColumn >= 7) ? 0 : currentColumn;
+                        gameState.currentColumn++;
+                        gameState.currentColumn = (gameState.currentColumn >= 7) ? 0 : gameState.currentColumn;
                     }
                     else if (simulatedKeyPress.Key == ConsoleKey.LeftArrow)
                     {
-                        currentColumn--;
-                        currentColumn = (currentColumn < 0) ? 6 : currentColumn;
+                        gameState.currentColumn--;
+                        gameState.currentColumn = (gameState.currentColumn < 0) ? 6 : gameState.currentColumn;
                     }
                     else if (simulatedKeyPress.Key == ConsoleKey.Enter)
                     {
@@ -214,34 +205,34 @@ namespace Assignment2
                         // Find the first available row bottom to top
                         for (row = 5; row >= 0; row--)
                         {
-                            if (board[row, currentColumn] != "X" && board[row, currentColumn] != "O")
+                            if (gameState.board[row, gameState.currentColumn] != "X" && gameState.board[row, gameState.currentColumn] != "O")
                             {
                                 break;
                             }
                         }
                         if (row >= 0)
                         {
-                            board[row, currentColumn] = currentPlayer;
-                            int result = checkWin(currentPlayer);
+                            gameState.board[row, gameState.currentColumn] = gameState.currentPlayer;
+                            int result = checkWin(gameState.currentPlayer);
                             if (result == 2)
                             {
                                 Console.Clear();
-                                printBoard(currentPlayer);
-                                Console.WriteLine(currentPlayer + " wins!");
+                                printBoard(gameState);
+                                Console.WriteLine(gameState.currentPlayer + " wins!");
                                 Task.Delay(1000).Wait();
                                 askForReplay(ref gameInProgress);
                             }
                             else if (result == 1)
                             {
                                 Console.Clear();
-                                printBoard(currentPlayer);
+                                printBoard(gameState);
                                 Console.WriteLine("Draw!");
                                 Task.Delay(1000).Wait();
                                 askForReplay(ref gameInProgress);
                             }
                             else
                             {
-                                currentPlayer = (currentPlayer == player1Symbol) ? player2Symbol : player1Symbol;
+                                gameState.currentPlayer = (gameState.currentPlayer == player1Symbol) ? player2Symbol : player1Symbol;
                                 menuShown = false;
                             }
                         }
@@ -286,7 +277,7 @@ namespace Assignment2
             {
                 for (int i = 0; i < 6; i++)
                 {
-                    if (board[i, j] == symbol && board[i, j + 1] == symbol && board[i, j + 2] == symbol && board[i, j + 3] == symbol)
+                    if (gameState.board[i, j] == symbol && gameState.board[i, j + 1] == symbol && gameState.board[i, j + 2] == symbol && gameState.board[i, j + 3] == symbol)
                     {
                         return result = 2;
                     }
@@ -297,7 +288,7 @@ namespace Assignment2
             {
                 for (int j = 0; j < 7; j++)
                 {
-                    if (board[i, j] == symbol && board[i + 1, j] == symbol && board[i + 2, j] == symbol && board[i + 3, j] == symbol)
+                    if (gameState.board[i, j] == symbol && gameState.board[i + 1, j] == symbol && gameState.board[i + 2, j] == symbol && gameState.board[i + 3, j] == symbol)
                     {
                         return result = 2;
                     }
@@ -308,7 +299,7 @@ namespace Assignment2
             {
                 for (int j = 0; j < 7 - 3; j++)  // Loop through columns 0 to 3
                 {
-                    if (board[i, j] == symbol && board[i - 1, j + 1] == symbol && board[i - 2, j + 2] == symbol && board[i - 3, j + 3] == symbol)
+                    if (gameState.board[i, j] == symbol && gameState.board[i - 1, j + 1] == symbol && gameState.board[i - 2, j + 2] == symbol && gameState.board[i - 3, j + 3] == symbol)
                     {
                         return result = 2;
                     }
@@ -319,7 +310,7 @@ namespace Assignment2
             {
                 for (int j = 0; j < 7 - 3; j++)  // Loop through columns 0 to 3
                 {
-                    if (board[i, j] == symbol && board[i + 1, j + 1] == symbol && board[i + 2, j + 2] == symbol && board[i + 3, j + 3] == symbol)
+                    if (gameState.board[i, j] == symbol && gameState.board[i + 1, j + 1] == symbol && gameState.board[i + 2, j + 2] == symbol && gameState.board[i + 3, j + 3] == symbol)
                     {
                         return result = 2;
                     }
@@ -340,7 +331,7 @@ namespace Assignment2
 
                 for (int j = 0; j < 7; j++)
                 {
-                    if (board[i, j] == "-")
+                    if (gameState.board[i, j] == "-")
                     {
                         count++;
                     }
@@ -349,9 +340,9 @@ namespace Assignment2
         }
         private void resetAll()
         {
-            currentRow = 0;
-            currentColumn = 0;
-            board = new string[6, 7]
+            gameState.currentRow = 0;
+            gameState.currentColumn = 0;
+            gameState.board = new string[6, 7]
             {
                 {"-", "-", "-", "-", "-", "-", "-"},
                 {"-", "-", "-", "-", "-", "-", "-"},
@@ -361,12 +352,13 @@ namespace Assignment2
                 {"-", "-", "-", "-", "-", "-", "-"},
             };
         }
-        public static void menu()
+        public static void Menu(ref ConnectFourGameState gameState, ref ConnectFourGameSaveLoad saveLoadHandler)
         {
             while (true)
             {
                 int choice;
-                Console.WriteLine("Please enter an option: 1) Display Help 2) Continue Game");
+                string fileName = "savedConnectFourGame.json";
+                Console.WriteLine("Please enter an option: 1) Display Help 2) Continue Game 3) Save Game 4) Load Game");
                 string input = Console.ReadLine();
                 bool success = int.TryParse(input, out choice);
                 if (success && choice == 1)
@@ -380,6 +372,15 @@ namespace Assignment2
 
                     Console.WriteLine("Continuing game..");
                     break;
+                }
+                else if (success && choice == 3)
+                {
+                    saveLoadHandler.Save(fileName);
+                }
+                else if (success && choice == 4)
+                {
+                    saveLoadHandler.Load(fileName);
+                    printBoard(gameState);
                 }
                 else
                 {
